@@ -1,20 +1,33 @@
-# This is a sample Python script.
-from ReadImage import ReadImage
+from PixelGroup import PixelGroup
+from Read import Read
 
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+def GroupRow(row, lastRow):
+    GroupRow = []
+    lastCol = row[0]
+    colCount = 1
+    for col in row:
+        if col == row[0]:
+            pass
+        if colCount == 28:
+            break
+        GroupRow.append(PixelGroup([[lastRow[colCount - 1],lastRow[colCount]],[row[colCount - 1],row[colCount]]]))
+        colCount+= 1
+    return GroupRow
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-
-    ReadImage("data0")
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    DataMatrix = Read("data0")
+    GroupMatrix = []
+    lastRow = DataMatrix[0][0]
+    for row in DataMatrix[0]:
+        if (row == DataMatrix[0][0]).all:
+            pass
+        GroupMatrix.append(GroupRow(row,lastRow))
+        lastRow = row
+    print(DataMatrix[0][7][15])
+    print(DataMatrix[0][7][14])
+    print('yolo')
+
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
