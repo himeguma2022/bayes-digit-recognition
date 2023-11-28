@@ -15,16 +15,22 @@ def GroupRow(row, lastRow):
         colCount+= 1
     return GroupRow
 
-
-if __name__ == '__main__':
-    DataMatrix = Read("data0")
+def PixelToGroups(matrix):
     GroupMatrix = []
     lastRow = DataMatrix[0][0]
     for row in DataMatrix[0]:
         if (row == DataMatrix[0][0]).all:
             pass
-        GroupMatrix.append(GroupRow(row,lastRow))
+        GroupMatrix.append(GroupRow(row, lastRow))
         lastRow = row
+    return GroupMatrix
+
+if __name__ == '__main__':
+    DataMatrix = Read("data0")
+    SampleGroups = []
+    for x in range(len(DataMatrix)):
+        SampleGroups.append(PixelToGroups(DataMatrix[x]))
+
     print(DataMatrix[0][7][15])
     print(DataMatrix[0][7][14])
     print('yolo')
