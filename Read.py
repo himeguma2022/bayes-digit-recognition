@@ -1,6 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-def Read(file):
+def Read(file, samples):
     matrix = 28
     with open(file, 'rb') as fid:
 
@@ -12,7 +12,7 @@ def Read(file):
     # plt.show()
 
     # for _ in range (4):
-        img = np.fromfile(fid, dtype=np.uint8, count=1000*matrix*matrix).reshape((1000,matrix,matrix))
+        img = np.fromfile(fid, dtype=np.uint8, count=samples*matrix*matrix).reshape((samples,matrix,matrix))
     return img
 
 

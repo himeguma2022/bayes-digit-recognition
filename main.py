@@ -2,6 +2,7 @@ import numpy as np
 
 from PixelGroup import PixelGroup
 from Read import Read
+from ProbabailityMatrix import ProbabilityMatrix
 
 
 def GroupRow(row, lastRow):
@@ -16,20 +17,26 @@ def PixelToGroups(matrix):
         GroupMatrix[row - 1] = (GroupRow(matrix[row],matrix[row - 1]))
     return GroupMatrix
 
-
-
+def MapDigit(ProbMatrix):
+    Map = np.zeros(shape=[27,27])
+    for x in range(len(Map)):
+        for y in range(len(Map[x])):
+            Map[x][y] = ProbMatrix.SampleGroupsProbabibilities[x][y].mean()
+    return Map
+def ProbMatrixGenerate(digit, samples):
+    DataMatrix = Read(digit, samples)
+    SampleGroups = np.empty_like(object, dtype=PixelGroup, shape=[samples, 27, 27])
+    for x in range(len(DataMatrix)):
+        SampleGroups[x] = PixelToGroups(DataMatrix[x])
+    return ProbabilityMatrix(SampleGroups, samples)
 
 
 
 if __name__ == '__main__':
-    DataMatrix = Read("data0")
-    SampleGroups = np.empty_like(object, dtype=PixelGroup, shape=[1000, 27, 27])
-    for x in range(len(DataMatrix)):
-        SampleGroups[x] = PixelToGroups(DataMatrix[x])
-    Probs = ProbabailityMatrix(SampleGroups,1000)
-
-    print(DataMatrix[0][7][15])
-    print(DataMatrix[0][7][14])
+    ProbClasses = ["data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9"]
+    ProbClassProbabilites = []
+    for x in ProbClasses:
+        ProbClassProbabilites.append(ProbMatrixGenerate(x, 10))
     print('yolo')
 
 
