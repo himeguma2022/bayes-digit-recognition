@@ -66,6 +66,8 @@ class ProbabilityMatrix:
                 out[x][y] = PixelGroup([[1,1],[1,1]])
                 negProb[x][y].divide(-1)
                 out[x][y].add(negProb[x][y])
+                out[x][y].log()
+        self.logPixels()
         return out
 
 if __name__ == '__main__':

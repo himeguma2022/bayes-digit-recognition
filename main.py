@@ -1,3 +1,5 @@
+import math
+
 import numpy as np
 
 from TestCase import TestCase
@@ -41,7 +43,7 @@ def ColumnCut(sample):
                     case 32:
                         out[x][y] = 0
                     case 43:
-                        out[x][y] = 128
+                        out[x][y] = 2
                     case 35:
                         out[x][y] = 255
     return out
@@ -69,38 +71,53 @@ def NaieveBayes(image, Probabilites):
     for x in range(len(imageGroup)):
         for y in range(len(imageGroup[x])):
             imageGroup[x][y].log()
-    Scores = np.array([0.0]*10)
+    Scores = np.zeros(dtype=float, shape=10)
     for digit in range(len(Probabilites)):
         for x in range(len(imageGroup)):
             for y in range(len(imageGroup[x])):
                 pixGroupEval = PixelGroup([[0,0],[0,0]])
-                pixGroupEval.add(imageGroup[x][y])
-                pixGroupEval.add(Probabilites[digit].SampleGroupsProbabibilities[x][y])
-                Scores[digit] += pixGroupEval.sumElements()
-    for x in range(len(Scores)):
-        print(f'{x}->{Scores[x]}')
+                if imageGroup[x][y].sumElements() < math.log(256):
+                    pixGroupEval.add(imageGroup[x][y].flip())
+                    pixGroupEval.add(Probabilites[digit].compProbs[x][y])
+                else:
+                    pixGroupEval.add(imageGroup[x][y])
+                    pixGroupEval.add(Probabilites[digit].SampleGroupsProbabibilities[x][y])
+                pixRes = pixGroupEval.sumElements()
+                Scores[digit] += pixRes
     Max = Scores.max()
-    print(f'Guesssed {np.where(Scores == Max)}')
-    return np.where(Scores == Max)
+    out = np.where(Scores == Max)[0]
+    return out[0]
 
 
 
 
 def ClassifyCorrect(test, ProbClassProbabilites):
-    print(test.answer)
-    return test.answer == NaieveBayes(test.image,ProbClassProbabilites)
+    result = NaieveBayes(test.image,ProbClassProbabilites)
+    return [test.answer, result]
 
 
 if __name__ == '__main__':
     ProbClasses = ["data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9"]
     ProbClassProbabilites = []
     for x in ProbClasses:
-        ProbClassProbabilites.append(ProbMatrixGenerate(x, 10))
-    TestImages = ReadTest("testimages", "testlabels", 1)
+        ProbClassProbabilites.append(ProbMatrixGenerate(x, 1000))
+    TestImages = ReadTest("testimages", "testlabels", 1000)
     Result = []
     for test in TestImages:
         Result.append(ClassifyCorrect(test, ProbClassProbabilites))
-    print('yolo')
+    ConfusionMatrix = np.zeros(shape=[10, 10])
+    for entry in Result:
+        ConfusionMatrix[entry[0]][entry[1]] += 1
+    for y in ConfusionMatrix:
+        print('\n')
+        for x in y:
+            print(x, end="\t\t")
+    CorrectID = 0
+    for x in range(len(ConfusionMatrix)):
+        CorrectID += ConfusionMatrix[x][x]
+    Accuracy = CorrectID / len(Result)
+    print('\n')
+    print(f'Correctly identified {CorrectID} out of {len(Result)}, an accuracy of {Accuracy}')
 
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

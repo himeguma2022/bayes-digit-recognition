@@ -27,7 +27,7 @@ class PixelGroup:
     def log(self):
         self.logged = True
         if 0 in self.matrix:
-            self.add(PixelGroup(0.00001*np.ones(shape=self.matrix.shape)))
+            self.add(PixelGroup(0.01*np.ones(shape=self.matrix.shape)))
         for x in range(len(self.matrix)):
             for y in range(len(self.matrix[x])):
                 self.matrix[x][y] = math.log(self.matrix[x][y])
@@ -37,6 +37,16 @@ class PixelGroup:
         for x in range(len(self.matrix)):
             for y in range(len(self.matrix[x])):
                 self.matrix[x][y] = math.pow(math.e,self.matrix[x][y])
+
+    def flip(self):
+        if self.logged:
+            self.inlog()
+            return self.flip()
+        W=PixelGroup([[255,255],[255,255]])
+        self.matrix = self.matrix*-1
+        W.add(self)
+        W.log()
+        return W
 
     def mean(self):
         if self.logged:
