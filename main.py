@@ -100,8 +100,8 @@ if __name__ == '__main__':
     ProbClasses = ["data0", "data1", "data2", "data3", "data4", "data5", "data6", "data7", "data8", "data9"]
     ProbClassProbabilites = []
     for x in ProbClasses:
-        ProbClassProbabilites.append(ProbMatrixGenerate(x, 100))
-    TestImages = ReadTest("testimages", "testlabels", 100)
+        ProbClassProbabilites.append(ProbMatrixGenerate(x, 1000))
+    TestImages = ReadTest("testimages", "testlabels", 1000)
     Result = []
     for test in TestImages:
         Result.append(ClassifyCorrect(test, ProbClassProbabilites))
